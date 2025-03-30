@@ -1,6 +1,6 @@
 ---
 title: "Project 1"
-author: "Leah Tesfaye"
+author: "Leah Tesfaye, Lauren Murphy"
 output: pdf_document
 date: "2025-03-29"
 ---
