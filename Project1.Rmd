@@ -1,0 +1,102 @@
+---
+title: "Project 1"
+author: "Leah Tesfaye"
+output: pdf_document
+date: "2025-03-29"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+library(reshape2)
+library(DescTools)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+df <- read.csv("C:\\Users\\ual-laptop\\Downloads\\Popular_Spotify_Songs.csv")
+
+head(df)
+```
+
+```{r}
+song_counts <- df %>%
+  group_by(released_year, artist_count) %>%
+  summarise(sighting = n(), .groups = 'drop')
+```
+
+
+```{r}
+plot1 <- ggplot(song_counts, aes(x = released_year, y = sighting, color = as.factor(artist_count), group = artist_count)) +
+  geom_line() +
+  geom_point() +
+  labs(title = "Artist count by year",
+       x = "Year",
+       y = "Song count",
+       color = "Number of artists") +
+  theme_minimal()
+
+print(plot1)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r}
+artist_counting <- df %>%
+  group_by(artist.s._name) %>%
+  summarise(song_count = n(), .groups = 'drop') %>%
+  arrange(desc(song_count))
+
+top_artists <- artist_counting %>%
+  top_n(10, song_count)
+
+head(top_artists)
+```
+
+```{r}
+plot2 <- ggplot(top_artists, aes(x = reorder(artist.s._name, -song_count), y = song_count, fill = artist.s._name)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Top 10 Artists with the Most Songs",
+       x = "Artist",
+       y = "Number of Songs") +
+  theme_minimal() +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+  
+print(plot2)
+```
+
+```{r}
+df_2022 <- df %>%
+  filter(released_year == 2022)
+
+months_count_2022 <- df_2022 %>%
+  group_by(released_month) %>%
+  summarise(song_count = n(), .groups = 'drop')
+```
+
+```{r}
+plot3 <- ggplot(months_count_2022, aes(x = released_month, y = song_count)) +
+  geom_point(size = 2, color = "blue") +
+  geom_line(color = "orange", linetype = "solid") +
+  labs(title = "Month and streams",
+       x = "Month",
+       y = "Song count"
+  ) +
+  scale_x_continuous(breaks = 1:12, labels = month.abb) +
+  theme_minimal()
+
+print(plot3)
+```
