@@ -15,6 +15,7 @@ library(tidyverse)
 library(dplyr)
 library(reshape2)
 library(DescTools)
+library(gridExtra)
 ```
 
 ## R Markdown
@@ -48,10 +49,6 @@ plot1 <- ggplot(song_counts, aes(x = released_year, y = sighting, color = as.fac
 
 print(plot1)
 ```
-
-## Including Plots
-
-You can also embed plots, for example:
 
 ```{r}
 artist_counting <- df %>%
@@ -102,7 +99,6 @@ plot3 <- ggplot(months_count_2022, aes(x = released_month, y = song_count)) +
 
 print(plot3)
 ```
-
 ```{r}
 combined_data <- df %>%
   filter(released_year == 2022) %>%
@@ -114,26 +110,31 @@ combined_data <- df %>%
   )
 
 # Song count plot
-ggplot(combined_data, aes(x = released_month, y = song_count)) +
+plot_song <- ggplot(combined_data, aes(x = released_month, y = song_count)) +
   geom_line(color = "lightblue", size = 1) +
   geom_point(size = 2) +
   scale_x_continuous(breaks = 1:12, labels = month.abb) +
   labs(
-    title = "Song Count by Month (2023)",
+    title = "Song Count by Month (2022)",
     x = "Month",
     y = "Number of Songs"
   ) +
   theme_minimal()
 
 # Energy plot
-ggplot(combined_data, aes(x = released_month, y = avg_energy)) +
+plot_energy <- ggplot(combined_data, aes(x = released_month, y = avg_energy)) +
   geom_line(color = "pink", size = 1) +
   geom_point(size = 2) +
   scale_x_continuous(breaks = 1:12, labels = month.abb) +
   labs(
-    title = "Average Energy by Month (2023)",
+    title = "Average Valence by Month (2022)",
     x = "Month",
-    y = "Average Energy"
+    y = "Average Valence"
   ) +
   theme_minimal()
+```
+
+```{r}
+# Stack the two line graphs vertically for easier comparison
+grid.arrange(plot_song, plot_energy, ncol = 1)
 ```
