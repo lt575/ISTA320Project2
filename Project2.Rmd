@@ -66,12 +66,14 @@ head(top_artists)
 ```
 
 ```{r}
-plot2 <- ggplot(top_artists, aes(x = reorder(artist.s._name, -song_count), y = song_count, fill = artist.s._name)) +
+plot2 <- ggplot(top_artists, aes(x = reorder(artist.s._name, -song_count), y = song_count, fill = reorder(artist.s._name, -song_count))) +
   geom_bar(stat = "identity") +
   labs(title = "Top 10 Artists with the Most Songs",
        x = "Artist",
-       y = "Number of Songs") +
+       y = "Number of Songs",
+       fill = "Artist name") +
   theme_minimal() +
+  scale_fill_brewer(palette = "Set3") +
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank())
   
@@ -91,7 +93,7 @@ months_count_2022 <- df_2022 %>%
 plot3 <- ggplot(months_count_2022, aes(x = released_month, y = song_count)) +
   geom_point(size = 2, color = "blue") +
   geom_line(color = "orange", linetype = "solid") +
-  labs(title = "Month and streams",
+  labs(title = "Song count by month(2022)",
        x = "Month",
        y = "Song count"
   ) +
