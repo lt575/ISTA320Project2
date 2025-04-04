@@ -100,3 +100,38 @@ plot3 <- ggplot(months_count_2022, aes(x = released_month, y = song_count)) +
 
 print(plot3)
 ```
+
+```{r}
+combined_data <- df %>%
+  filter(released_year == 2022) %>%
+  group_by(released_month) %>%
+  summarise(
+    song_count = n(),
+    avg_energy = mean(valence_., na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Song count plot
+ggplot(combined_data, aes(x = released_month, y = song_count)) +
+  geom_line(color = "lightblue", size = 1) +
+  geom_point(size = 2) +
+  scale_x_continuous(breaks = 1:12, labels = month.abb) +
+  labs(
+    title = "Song Count by Month (2023)",
+    x = "Month",
+    y = "Number of Songs"
+  ) +
+  theme_minimal()
+
+# Energy plot
+ggplot(combined_data, aes(x = released_month, y = avg_energy)) +
+  geom_line(color = "pink", size = 1) +
+  geom_point(size = 2) +
+  scale_x_continuous(breaks = 1:12, labels = month.abb) +
+  labs(
+    title = "Average Energy by Month (2023)",
+    x = "Month",
+    y = "Average Energy"
+  ) +
+  theme_minimal()
+```
