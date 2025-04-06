@@ -1,12 +1,12 @@
 ---
-title: "Project 2"
+title: "Project 2: Top songs, artists, and months on Spotify"
 author: "Leah Tesfaye, Lauren Murphy"
 output: pdf_document
-date: "2025-03-29"
+date: "2025-04-05"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE, echo = TRUE)
 ```
 
 ```{r}
@@ -25,15 +25,11 @@ df <- read.csv("C:\\Users\\ual-laptop\\Downloads\\Popular_Spotify_Songs.csv")
 head(df)
 ```
 
-```{r}
-song_counts <- df %>%
-  group_by(released_year, artist_count) %>%
-  summarise(sighting = n(), .groups = 'drop')
-```
-
 
 
 ```{r}
+# Another dataset was created, grouping song counts by artists so as to
+# consolidate our data to the necessary columns.
 artist_counting <- df %>%
   group_by(artist.s._name) %>%
   summarise(song_count = n(), .groups = 'drop') %>%
@@ -53,7 +49,7 @@ head(top_artists)
 -The chart will be comprised of modern artists, as older artists may have lower appearances in the dataset, despite their fame. This could be due to the fact that older artists/groups were unable to take advantage of streaming services like Spotify at the time of peak popularity.
 
 ```{r}
-plot2 <- ggplot(top_artists, aes(x = reorder(artist.s._name, -song_count), 
+plot1 <- ggplot(top_artists, aes(x = reorder(artist.s._name, -song_count), 
                 y = song_count, fill = reorder(artist.s._name, -song_count))) +
   geom_bar(stat = "identity") +
   labs(title = "Top 10 Artists with the Most Songs",
@@ -65,19 +61,11 @@ plot2 <- ggplot(top_artists, aes(x = reorder(artist.s._name, -song_count),
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank())
   
-print(plot2)
+print(plot1)
 ```
 One of our key findings was that a few artists like Taylor Swift and The Weeknd were streamed the most compared to the other artists on the chart. 
 Another observation was that the majority of top artists are English-speaking, but 3 groups are not(BTS, Bad Bunny, Feid). This represents the growing influence of non-English music & artists on the global music history.
 
-```{r}
-df_2022 <- df %>%
-  filter(released_year == 2022)
-
-months_count_2022 <- df_2022 %>%
-  group_by(released_month) %>%
-  summarise(song_count = n(), .groups = 'drop')
-```
 
 # Question 2: How are song count and avg. valence related?
 
@@ -88,6 +76,8 @@ months_count_2022 <- df_2022 %>%
 - May-July and December will have higher song counts, with drops occurring in August-October. In terms of valence, the trend will follow a similar path as song count.
 
 ```{r}
+# Filters the data using 2022, grouping the data by month. The dataset also
+# holds song count and average valence by month.
 combined_data <- df %>%
   filter(released_year == 2022) %>%
   group_by(released_month) %>%
@@ -97,7 +87,10 @@ combined_data <- df %>%
     .groups = "drop"
   )
 
-# Song count plot
+# Song count plot. The song and energy plots were separated due to the different
+# scaling along the Y-axis. We believed it would be easier to look at the 2 
+# plots vertically, with the months lined up.
+
 plot_song <- ggplot(combined_data, aes(x = released_month, y = song_count)) +
   geom_line(color = "lightblue", size = 1) +
   geom_point(size = 2) +
