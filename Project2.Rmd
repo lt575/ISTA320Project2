@@ -18,11 +18,6 @@ library(DescTools)
 library(gridExtra)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r}
 df <- read.csv("C:\\Users\\ual-laptop\\Downloads\\Popular_Spotify_Songs.csv")
@@ -37,18 +32,6 @@ song_counts <- df %>%
 ```
 
 
-```{r}
-plot1 <- ggplot(song_counts, aes(x = released_year, y = sighting, color = as.factor(artist_count), group = artist_count)) +
-  geom_line() +
-  geom_point() +
-  labs(title = "Artist count by year",
-       x = "Year",
-       y = "Song count",
-       color = "Number of artists") +
-  theme_minimal()
-
-print(plot1)
-```
 
 ```{r}
 artist_counting <- df %>%
@@ -61,9 +44,17 @@ top_artists <- artist_counting %>%
 
 head(top_artists)
 ```
+# Question 1: Who are the top artists with the most songs?
+
+**Why?**
+- Considering the large scale of data(1930-2023), we wanted to consolidate the data to see if the top artists would be modern(ex. Taylor Swift, The Weeknd) or older in terms of popularity(ex. Madonna, Michael Jackson)
+
+**Hypothesis**
+-The chart will be comprised of modern artists, as older artists may have lower appearances in the dataset, despite their fame. This could be due to the fact that older artists/groups were unable to take advantage of streaming services like Spotify at the time of peak popularity.
 
 ```{r}
-plot2 <- ggplot(top_artists, aes(x = reorder(artist.s._name, -song_count), y = song_count, fill = reorder(artist.s._name, -song_count))) +
+plot2 <- ggplot(top_artists, aes(x = reorder(artist.s._name, -song_count), 
+                y = song_count, fill = reorder(artist.s._name, -song_count))) +
   geom_bar(stat = "identity") +
   labs(title = "Top 10 Artists with the Most Songs",
        x = "Artist",
@@ -76,6 +67,8 @@ plot2 <- ggplot(top_artists, aes(x = reorder(artist.s._name, -song_count), y = s
   
 print(plot2)
 ```
+One of our key findings was that a few artists like Taylor Swift and The Weeknd were streamed the most compared to the other artists on the chart. 
+Another observation was that the majority of top artists are English-speaking, but 3 groups are not(BTS, Bad Bunny, Feid). This represents the growing influence of non-English music & artists on the global music history.
 
 ```{r}
 df_2022 <- df %>%
@@ -86,19 +79,14 @@ months_count_2022 <- df_2022 %>%
   summarise(song_count = n(), .groups = 'drop')
 ```
 
-```{r}
-plot3 <- ggplot(months_count_2022, aes(x = released_month, y = song_count)) +
-  geom_point(size = 2, color = "blue") +
-  geom_line(color = "orange", linetype = "solid") +
-  labs(title = "Song count by month(2022)",
-       x = "Month",
-       y = "Song count"
-  ) +
-  scale_x_continuous(breaks = 1:12, labels = month.abb) +
-  theme_minimal()
+# Question 2: How are song count and avg. valence related?
 
-print(plot3)
-```
+**Why?**
+- Looking at song count in relation to another variable, such as valence(happiness) or liveness, can help us better understand potential relationships and the reasoning for different behaviors throughout the year.
+
+**Hypothesis**
+- May-July and December will have higher song counts, with drops occurring in August-October. In terms of valence, the trend will follow a similar path as song count.
+
 ```{r}
 combined_data <- df %>%
   filter(released_year == 2022) %>%
@@ -132,9 +120,19 @@ plot_energy <- ggplot(combined_data, aes(x = released_month, y = avg_energy)) +
     y = "Average Valence"
   ) +
   theme_minimal()
+
+
 ```
 
 ```{r}
-# Stack the two line graphs vertically for easier comparison
+# Stacking the two line graphs vertically for easier comparison
 grid.arrange(plot_song, plot_energy, ncol = 1)
 ```
+
+- One of our key findings was that months like May and December tend to have the most releases, in comparison to months with higher song valence being March, May-August and December. 
+
+- One reason for the higher song count and average valence values in May could be due to seasonal changes, with artists and record labels releasing upbeat, happy music in anticipation of the summer season. 
+
+- There are also points of conflict, with a peak in song count and drop in average valence in October. Moodier, more introspective music is often released during the fall months, which can explain the drop in valence. However, this does not necessarily correlate to lower song counts. Taylor Swift's Midnights album was released in October of 2022, with the music a mix of retro-pop and deeper, more introspecive tracks.
+
+- Overall, we were able to better understand the potential relationship between valence and song releases throughout the year, as well as the potential reasons behind conflicting observations.
